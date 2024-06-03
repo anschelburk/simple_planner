@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
+        initialView: 'timeGridDay',
         events: '/api/get_events/',
         editable: true,
         selectable: true,
