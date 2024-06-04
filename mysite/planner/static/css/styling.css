@@ -1,0 +1,8 @@
+#calendar {
+    width: 20%;
+    height: 98vh;  /* 100% of the viewport height */
+    position: fixed;  /* Ensure it stays fixed in the viewport */
+    top: 1%;
+    left: 1%;
+    overflow: hidden;  /* Prevent overflow issues */
+}
