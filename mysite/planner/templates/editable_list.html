@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editable Bullet List with Title</title>
+    <style>
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .bullet-list {
+            list-style-type: disc;
+            padding-left: 40px;
+        }
+        .bullet-list li {
+            margin-bottom: 5px;
+        }
+        .bullet-list li input {
+            border: none;
+            outline: none;
+            width: 100%;
+        }
+        .bullet-list li input:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div contenteditable="true" class="title" id="editable-title">Enter title here</div>
+    <ul class="bullet-list" id="editable-list">
+        <li><input type="text"></li>
+    </ul>
+
+    <script>
+        document.getElementById('editable-list').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const newLi = document.createElement('li');
+                const newInput = document.createElement('input');
+                newInput.type = 'text';
+                newLi.appendChild(newInput);
+                this.appendChild(newLi);
+
+                // Move the cursor to the new input field
+                newInput.focus();
+            }
+        });
+
+        // Prevents a new line from being created in the input itself.
+        document.getElementById('editable-list').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+
+        // Ensure the title is editable and looks appropriate
+        document.getElementById('editable-title').addEventListener('focus', function() {
+            if (this.innerText === 'Enter title here') {
+                this.innerText = '';
+            }
+        });
+
+        document.getElementById('editable-title').addEventListener('blur', function() {
+            if (this.innerText.trim() === '') {
+                this.innerText = 'Enter title here';
+            }
+        });
+    </script>
+</body>
+</html>

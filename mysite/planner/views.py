@@ -17,6 +17,9 @@ def create_event(request):
             end=data['end']
         )
         return JsonResponse({'id': event.id})
+
+def editable_list(request):
+    return render(request, 'editable_list.html')
     
 def get_events(request):
     events = Event.objects.all().values('id', 'title', 'start', 'end')
