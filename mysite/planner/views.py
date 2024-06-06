@@ -17,13 +17,14 @@ def create_event(request):
             end=data['end']
         )
         return JsonResponse({'id': event.id})
-    
+
 def get_events(request):
     events = Event.objects.all().values('id', 'title', 'start', 'end')
     return JsonResponse(list(events), safe=False)
 
 @csrf_exempt
 def update_event(request):
+    breakpoint()
     if request.method == 'PUT':
         try:
             data = json.loads(request.body)
@@ -34,7 +35,7 @@ def update_event(request):
 
             # Retrieve the event from the database
             event = Event.objects.get(id=event_id)
-            
+
             # Update the event fields
             event.title = title
             event.start = start
