@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
             $('#eventStart').val(info.startStr);
             $('#eventEnd').val(info.endStr);
             $('#editEventModal').modal('show');
-            
+
             $('#saveEventChanges').off('click').on('click', function() {
                 var title = $('#eventTitle').val();
                 var start = $('#eventStart').val();
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
             $('#eventStart').val(info.event.start.toISOString().slice(0, 16));
             $('#eventEnd').val(info.event.end ? info.event.end.toISOString().slice(0, 16) : '');
             $('#editEventModal').modal('show');
-            
+
             $('#saveEventChanges').off('click').on('click', function() {
                 var id = $('#eventId').val();
                 var title = $('#eventTitle').val();
