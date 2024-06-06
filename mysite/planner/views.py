@@ -24,7 +24,7 @@ def get_events(request):
 
 @csrf_exempt
 def update_event(request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         try:
             data = json.loads(request.body)
             event_id = data.get('id')
