@@ -24,7 +24,7 @@ def get_events(request):
 
 @csrf_exempt
 def update_event(request):
-    breakpoint()
+    # breakpoint()
     if request.method == 'PUT':
         try:
             data = json.loads(request.body)
