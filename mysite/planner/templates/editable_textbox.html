@@ -1,0 +1,33 @@
+{% extends "base_site.html" %}
+
+{% block head_content %}
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@1.5.0"></script>
+{% endblock %}
+
+{% block body_content %}
+    <div>
+        <textarea id="editable-text" hx-post="{% url 'editable_textbox' %}" hx-trigger="keyup changed delay:500ms" hx-target="#output" hx-swap="outerHTML"></textarea>
+    </div>
+    <div id="output">
+        <ul id="editable-list">
+            <li>Sample item</li>
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById('editable-text').addEventListener('input', function () {
+            let text = this.value;
+            let lines = text.split('\n');
+            let ul = document.getElementById('editable-list');
+            ul.innerHTML = '';
+            lines.forEach(line => {
+                let li = document.createElement('li');
+                li.textContent = line;
+                ul.appendChild(li);
+            });
+        });
+    </script>
+{% endblock %}

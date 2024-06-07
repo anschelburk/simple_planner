@@ -22,6 +22,9 @@ def get_events(request):
     events = Event.objects.all().values('id', 'title', 'start', 'end')
     return JsonResponse(list(events), safe=False)
 
+def editable_textbox(request):
+    pass
+
 @csrf_exempt
 def update_event(request):
     if request.method == 'PUT':
