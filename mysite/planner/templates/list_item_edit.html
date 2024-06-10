@@ -1,0 +1,3 @@
+<form hx-post="{% url 'list_item_edit' item.id %}" hx-trigger="blur, keyup[enter]" hx-target="this">
+    {{ form.as_p }}
+</form>

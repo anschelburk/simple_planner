@@ -1,6 +1,8 @@
-from .models import Event
-from django.http import JsonResponse
-from django.shortcuts import render
+from .forms import ListForm
+from .models import Event, ListItem
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -55,3 +57,30 @@ def update_event(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid HTTP method'}, status=405)
+
+def list_view(request):
+    items = ListItem.objects.all()
+    return render(request, 'editable_list.html', {'items': items})
+
+def list_edit(request, list_item_id):
+    item = get_object_or_404(ListItem, id=list_item_id)
+    if request.method == 'POST':
+        form = ListForm(request.POST, instance=item)
+        if form.is_valid():
+            item = form.save()
+            return HttpResponse(item.name)  # Return the updated item name
+    else:
+        form = ListForm(instance=item)
+    return render(request, 'editable_list_edit.html', {'form': form, 'item': item})
+
+def list_add(request):
+    if request.method == 'POST':
+        form = ListForm(request.POST)
+        if form.is_valid():
+            item = form.save()
+            # Use render_to_string to render the URL with context
+            li_content = render_to_string('list_item.html', {'item': item})
+            return HttpResponse(li_content)
+    else:
+        form = ListForm()
+    return render(request, 'editable_list_add.html', {'form': form})
