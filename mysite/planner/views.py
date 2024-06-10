@@ -22,15 +22,19 @@ def get_events(request):
     events = Event.objects.all().values('id', 'title', 'start', 'end')
     return JsonResponse(list(events), safe=False)
 
-def editable_textbox(request):
-    pass
+def editable_list(request):
+    if request.method == 'POST':
+        new_text = request.POST.get('text', '')
+        lines = new_text.split('\n')
+        return JsonResponse({'lines': lines})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @csrf_exempt
 def update_event(request):
     if request.method == 'PUT':
         try:
             data = json.loads(request.body)
-            event_id = data.get('id')
+            event_id = data.get('id') 
             title = data.get('title')
             start = data.get('start')
             end = data.get('end')
