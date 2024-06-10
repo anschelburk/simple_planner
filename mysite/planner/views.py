@@ -62,8 +62,8 @@ def list_view(request):
     items = ListItem.objects.all()
     return render(request, 'editable_list.html', {'items': items})
 
-def list_edit(request, list_item_id):
-    item = get_object_or_404(ListItem, id=list_item_id)
+def list_edit(request, item_id):
+    item = get_object_or_404(ListItem, id=item_id)
     if request.method == 'POST':
         form = ListForm(request.POST, instance=item)
         if form.is_valid():
@@ -71,7 +71,7 @@ def list_edit(request, list_item_id):
             return HttpResponse(item.name)  # Return the updated item name
     else:
         form = ListForm(instance=item)
-    return render(request, 'editable_list_edit.html', {'form': form, 'item': item})
+    return render(request, 'list_item_edit.html', {'form': form, 'item': item})
 
 def list_add(request):
     if request.method == 'POST':
