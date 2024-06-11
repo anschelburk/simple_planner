@@ -1,9 +1,11 @@
-from .forms import ListForm
+from .forms import ListItemBaseForm, ListItemUpdateForm
 from .models import Event, ListItem
 from django.http import HttpResponse, JsonResponse
+from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
+from urllib.parse import parse_qs
 import json
 
 def calendar_view(request):
@@ -58,29 +60,37 @@ def update_event(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid HTTP method'}, status=405)
 
-def list_view(request):
+def list_view_items(request):
     items = ListItem.objects.all()
-    return render(request, 'editable_list.html', {'items': items})
+    add_form = ListItemBaseForm()
+    return render(
+        request,
+        "list_main_view.html",
+        {"items": items,
+         "add_form": add_form,
+         "csrf_token": get_token(request)},
+    )
 
-def list_edit(request, item_id):
-    item = get_object_or_404(ListItem, id=item_id)
-    if request.method == 'POST':
-        form = ListForm(request.POST, instance=item)
+def list_update_item(request, pk):
+    item = get_object_or_404(ListItem, pk=pk)
+    if request.method == "PUT":
+        body_data = parse_qs(request.body.decode())
+        data = {key: value[0] for key, value in body_data.items()}
+        form = ListItemUpdateForm(data, instance=item)
         if form.is_valid():
             item = form.save()
-            return HttpResponse(item.name)  # Return the updated item name
+            return render(request, "list_item.html", {"item": item})
     else:
-        form = ListForm(instance=item)
-    return render(request, 'list_item_edit.html', {'form': form, 'item': item})
+        form = ListItemUpdateForm(instance=item)
+    return render(
+        request,
+        "list_update_item.html",
+        {"form": form, "item": item, "csrf_token": get_token(request)},
+    )
 
-def list_add(request):
-    if request.method == 'POST':
-        form = ListForm(request.POST)
-        if form.is_valid():
-            item = form.save()
-            # Use render_to_string to render the URL with context
-            li_content = render_to_string('list_item.html', {'item': item})
-            return HttpResponse(li_content)
-    else:
-        form = ListForm()
-    return render(request, 'editable_list_add.html', {'form': form})
+def list_add_item(request):
+    form = ListItemBaseForm(request.POST)
+    if form.is_valid():
+        item = form.save()
+        return render(request, "list_item.html", {"item": item})
+    return JsonResponse({"success": False})
