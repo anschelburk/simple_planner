@@ -1,0 +1,4 @@
+<form hx-put="{% url 'list_update_item' item.pk %}" hx-trigger="blur from:input">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <input type="text" name="content" value="{{ item.content }}" hx-put="{% url 'list_update_item' item.pk %}" hx-trigger="blur changed" hx-target="this" hx-swap="outerHTML" placeholder="Enter item here..." maxlength="255" required="" id="id_content" onkeydown="handleEnterKey(event)">
+</form>

@@ -1,0 +1,68 @@
+{% extends "base_site.html" %}
+
+{% block head_content %}
+    {% load static %}
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/htmx.org@1.4.1"></script>
+    <link href="{% static 'css/styling.css' %}" rel="stylesheet">
+    <script>
+        document.addEventListener('htmx:configRequest', function(event) {
+            var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            event.detail.headers['X-CSRFToken'] = csrfToken;
+        });
+
+        document.addEventListener('htmx:configRequest', function(event) {
+            if (event.detail.triggeringEvent.type === 'keydown' && event.detail.triggeringEvent.key === 'Enter') {
+                event.detail.path = "/add_item/";
+                event.detail.headers['HX-Trigger'] = 'add-new-item';
+            }
+        });
+
+        document.addEventListener('htmx:afterRequest', function(event) {
+            if (event.detail.xhr && event.detail.xhr.responseURL.endsWith("{% url 'list_add_item' %}")) {
+                const form = document.querySelector('#add-item-form');
+                form.reset();  // Clear the form for the next input
+                form.querySelector('input[type="text"]').focus();  // Focus on the input field
+
+                console.log('Item added');
+
+            }
+        });
+
+        function handleEnterKey(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                event.target.blur();
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block body_content %}
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+    <ul id="work-item-list">
+        {% for item in work_items %}
+            <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' item.pk %}" hx-trigger="click">
+                {{ item.content }}
+            </li>
+        {% endfor %}
+    </ul>
+    <form id="add-item-form" hx-post="{% url 'list_add_item' %}" hx-target="#work-item-list" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
+        {{ add_form.as_p }}
+        <input type="submit" value="Add">
+    </form>
+
+    <ul id="personal-item-list">
+        {% for item in personal_items %}
+            <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' item.pk %}" hx-trigger="click">
+                {{ item.content }}
+            </li>
+        {% endfor %}
+    </ul>
+    <form id="add-item-form" hx-post="{% url 'list_add_item' %}" hx-target="#personal-item-list" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
+        {{ add_form.as_p }}
+        <input type="submit" value="Add">
+    </form>
+
+{% endblock %}
