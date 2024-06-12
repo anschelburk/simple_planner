@@ -41,15 +41,28 @@
 {% block body_content %}
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
-    <ul id="item-list">
-        {% for item in items %}
+    <ul id="work-item-list">
+        {% for item in work_items %}
             <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' item.pk %}" hx-trigger="click">
                 {{ item.content }}
             </li>
         {% endfor %}
     </ul>
-    <form id="add-item-form" hx-post="{% url 'list_add_item' %}" hx-target="#item-list" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
+    <form id="add-item-form" hx-post="{% url 'list_add_item' %}" hx-target="#work-item-list" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
         {{ add_form.as_p }}
         <input type="submit" value="Add">
     </form>
+
+    <ul id="personal-item-list">
+        {% for item in personal_items %}
+            <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' item.pk %}" hx-trigger="click">
+                {{ item.content }}
+            </li>
+        {% endfor %}
+    </ul>
+    <form id="add-item-form" hx-post="{% url 'list_add_item' %}" hx-target="#personal-item-list" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
+        {{ add_form.as_p }}
+        <input type="submit" value="Add">
+    </form>
+
 {% endblock %}
