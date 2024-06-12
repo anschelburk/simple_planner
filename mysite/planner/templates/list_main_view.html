@@ -4,6 +4,7 @@
     {% load static %}
     <meta charset="UTF-8">
     <script src="https://unpkg.com/htmx.org@1.4.1"></script>
+    <link href="{% static 'css/styling.css' %}" rel="stylesheet">
     <script>
         document.addEventListener('htmx:configRequest', function(event) {
             var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -34,7 +35,7 @@
                 event.target.blur();
             }
         }
-    </script>    
+    </script>
 {% endblock %}
 
 {% block body_content %}
