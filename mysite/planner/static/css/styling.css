@@ -6,3 +6,7 @@
     left: 1%;
     overflow: hidden;  /* Prevent overflow issues */
 }
+
+form {
+  margin: 0px;
+}

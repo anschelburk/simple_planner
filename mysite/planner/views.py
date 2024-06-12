@@ -38,7 +38,7 @@ def update_event(request):
     if request.method == 'PUT':
         try:
             data = json.loads(request.body)
-            event_id = data.get('id') 
+            event_id = data.get('id')
             title = data.get('title')
             start = data.get('start')
             end = data.get('end')
@@ -61,12 +61,18 @@ def update_event(request):
         return JsonResponse({'status': 'error', 'message': 'Invalid HTTP method'}, status=405)
 
 def list_view_items(request):
-    items = ListItem.objects.all()
+    # = 3 queries, can we do this in one?
+    work_items = ListItem.objects.filter(category="work")
+    personal_items = ListItem.objects.filter(category="personal")
+    other_items = ListItem.objects.filter(category="other")
+
     add_form = ListItemBaseForm()
     return render(
         request,
         "list_main_view.html",
-        {"items": items,
+        {"work_items": work_items,
+         "personal_items": personal_items,
+         "other_items": other_items,
          "add_form": add_form,
          "csrf_token": get_token(request)},
     )
@@ -78,10 +84,14 @@ def list_update_item(request, pk):
         data = {key: value[0] for key, value in body_data.items()}
         form = ListItemUpdateForm(data, instance=item)
         if form.is_valid():
+            # make sure we assign the updated values to the item variable
             item = form.save()
+            # early return after updating the item, function is done
             return render(request, "list_item.html", {"item": item})
     else:
+        # GET request
         form = ListItemUpdateForm(instance=item)
+
     return render(
         request,
         "list_update_item.html",
