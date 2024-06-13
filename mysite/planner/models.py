@@ -19,6 +19,7 @@ class Event(models.Model):
 
 class ListItem(models.Model):
     content = models.CharField(max_length=255)
+    list_id = models.IntegerField()
 
     def __str__(self):
-        return self.name
+        return self.content

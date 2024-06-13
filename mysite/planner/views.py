@@ -1,5 +1,6 @@
 from .forms import ListItemBaseForm, ListItemUpdateForm
 from .models import Event, ListItem
+from collections import defaultdict
 from django.http import HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, render
@@ -61,45 +62,37 @@ def update_event(request):
         return JsonResponse({'status': 'error', 'message': 'Invalid HTTP method'}, status=405)
 
 def list_view_items(request):
-    # = 3 queries, can we do this in one?
-    work_items = ListItem.objects.filter(category="work")
-    personal_items = ListItem.objects.filter(category="personal")
-    other_items = ListItem.objects.filter(category="other")
+    all_list_items = ListItem.objects.all()
+    item_lists = defaultdict(list)
+    for item in all_list_items:
+        item_lists[item.list_id].append(item)    
+    return_render_context = {}
+    for i in range(1, 3):
+        return_render_context[f"list{i}_items"] = item_lists[i]
+        return_render_context[f"add_form{i}"] = ListItemBaseForm(i)    
+    return_render_context["csrf_token"] = get_token(request)    
+    return render(request, "list_main_view.html", return_render_context)
 
-    add_form = ListItemBaseForm()
-    return render(
-        request,
-        "list_main_view.html",
-        {"work_items": work_items,
-         "personal_items": personal_items,
-         "other_items": other_items,
-         "add_form": add_form,
-         "csrf_token": get_token(request)},
-    )
-
-def list_update_item(request, pk):
+def list_update_item(request, list_id, pk):
     item = get_object_or_404(ListItem, pk=pk)
     if request.method == "PUT":
         body_data = parse_qs(request.body.decode())
         data = {key: value[0] for key, value in body_data.items()}
         form = ListItemUpdateForm(data, instance=item)
         if form.is_valid():
-            # make sure we assign the updated values to the item variable
             item = form.save()
-            # early return after updating the item, function is done
             return render(request, "list_item.html", {"item": item})
     else:
         # GET request
         form = ListItemUpdateForm(instance=item)
-
     return render(
         request,
         "list_update_item.html",
         {"form": form, "item": item, "csrf_token": get_token(request)},
     )
 
-def list_add_item(request):
-    form = ListItemBaseForm(request.POST)
+def list_add_item(request, list_id):
+    form = ListItemBaseForm(list_id, request.POST)
     if form.is_valid():
         item = form.save()
         return render(request, "list_item.html", {"item": item})
