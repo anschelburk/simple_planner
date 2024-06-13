@@ -1,5 +1,6 @@
 from .forms import ListItemBaseForm, ListItemUpdateForm
 from .models import Event, ListItem
+from collections import defaultdict
 from django.http import HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, render
@@ -61,20 +62,16 @@ def update_event(request):
         return JsonResponse({'status': 'error', 'message': 'Invalid HTTP method'}, status=405)
 
 def list_view_items(request):
-    list1_items = ListItem.objects.filter(list_id=1)
-    list2_items = ListItem.objects.filter(list_id=2)
-    add_form1 = ListItemBaseForm(1)
-    add_form2 = ListItemBaseForm(2)
-    return render(
-        request,
-        "list_main_view.html", {
-            "list1_items": list1_items,
-            "list2_items": list2_items,
-            "add_form1": add_form1,
-            "add_form2": add_form2,
-            "csrf_token": get_token(request)
-        },
-    )
+    all_list_items = ListItem.objects.all()
+    item_lists = defaultdict(list)
+    for item in all_list_items:
+        item_lists[item.list_id].append(item)    
+    return_render_context = {}
+    for i in range(1, 3):
+        return_render_context[f"list{i}_items"] = item_lists[i]
+        return_render_context[f"add_form{i}"] = ListItemBaseForm(i)    
+    return_render_context["csrf_token"] = get_token(request)    
+    return render(request, "list_main_view.html", return_render_context)
 
 def list_update_item(request, list_id, pk):
     item = get_object_or_404(ListItem, pk=pk)
