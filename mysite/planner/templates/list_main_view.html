@@ -11,35 +11,22 @@
 {% block body_content %}
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div class="list-container">
-        <div class="list">
-            <h1>List 1</h1>
-            <ul id="item-list-1">
-                {% for item in list1_items %}
-                    <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' 1 item.pk %}" hx-trigger="click">
-                        {{ item.content }}
-                    </li>
-                {% endfor %}
-            </ul>
-            <form id="add-item-form-1" hx-post="{% url 'list_add_item' 1 %}" hx-target="#item-list-1" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
-                {% csrf_token %}
-                {{ add_form1.as_p }}
-                <input type="submit" value="Add">
-            </form>
-        </div>
-        <div class="list">
-            <h1>List 2</h1>
-            <ul id="item-list-2">
-                {% for item in list2_items %}
-                    <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' 2 item.pk %}" hx-trigger="click">
-                        {{ item.content }}
-                    </li>
-                {% endfor %}
-            </ul>
-            <form id="add-item-form-2" hx-post="{% url 'list_add_item' 2 %}" hx-target="#item-list-2" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
-                {% csrf_token %}
-                {{ add_form2.as_p }}
-                <input type="submit" value="Add">
-            </form>
-        </div>
+        {% for list in lists %}
+            <div class="list">
+                <h1>List {{ list.id }}</h1>
+                <ul id="item-list-{{ list.id }}">
+                    {% for item in list.items %}
+                        <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' list.id item.pk %}" hx-trigger="click">
+                            {{ item.content }}
+                        </li>
+                    {% endfor %}
+                </ul>
+                <form id="add-item-form-{{ list.id }}" hx-post="{% url 'list_add_item' list.id %}" hx-target="#item-list-{{ list.id }}" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
+                    {% csrf_token %}
+                    {{ list.add_form.as_p }}
+                    <input type="submit" value="Add">
+                </form>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}

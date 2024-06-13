@@ -61,16 +61,23 @@ def update_event(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid HTTP method'}, status=405)
 
+
 def list_view_items(request):
     all_list_items = ListItem.objects.all()
-    item_lists = defaultdict(list)
+    item_lists = defaultdict(list)    
     for item in all_list_items:
-        item_lists[item.list_id].append(item)    
-    return_render_context = {}
-    for i in range(1, 3):
-        return_render_context[f"list{i}_items"] = item_lists[i]
-        return_render_context[f"add_form{i}"] = ListItemBaseForm(i)    
-    return_render_context["csrf_token"] = get_token(request)    
+        item_lists[item.list_id].append(item)
+    lists = []
+    for listID in range(1, 3):  # Adjust this range as needed
+        lists.append({
+            'id': listID,
+            'items': item_lists[listID],
+            'add_form': ListItemBaseForm(listID)
+        })
+    return_render_context = {
+        'lists': lists,
+        'csrf_token': get_token(request)
+    }
     return render(request, "list_main_view.html", return_render_context)
 
 def list_update_item(request, list_id, pk):
