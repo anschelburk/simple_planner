@@ -68,7 +68,7 @@ def list_view_items(request):
     for item in all_list_items:
         item_lists[item.list_id].append(item)
     lists = []
-    for listID in range(1, 3):  # Adjust this range as needed
+    for listID in range(1, 4):  # Adjust this range as needed
         lists.append({
             'id': listID,
             'items': item_lists[listID],
