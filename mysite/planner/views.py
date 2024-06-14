@@ -81,7 +81,7 @@ def list_view_items(request):
     return render(request, "list_main_view.html", return_render_context)
 
 def list_update_item(request, list_id, pk):
-    item = get_object_or_404(ListItem, pk=pk)
+    item = get_object_or_404(ListItem, pk=pk, list_id=list_id)
     if request.method == "PUT":
         body_data = parse_qs(request.body.decode())
         data = {key: value[0] for key, value in body_data.items()}
@@ -89,14 +89,12 @@ def list_update_item(request, list_id, pk):
         if form.is_valid():
             item = form.save()
             return render(request, "list_item.html", {"item": item})
+        else:
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)            
     else:
         # GET request
         form = ListItemUpdateForm(instance=item)
-    return render(
-        request,
-        "list_update_item.html",
-        {"form": form, "item": item, "csrf_token": get_token(request)},
-    )
+    return render(request, "list_update_item.html", {"form": form, "item": item, "csrf_token": get_token(request)})
 
 def list_add_item(request, list_id):
     form = ListItemBaseForm(list_id, request.POST)
