@@ -4,7 +4,7 @@ from django import forms
 class ListItemBaseForm(forms.ModelForm):
     class Meta:
         model = ListItem
-        fields = ["content"]
+        fields = ["content", "list_id"]
 
     def __init__(self, list_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
