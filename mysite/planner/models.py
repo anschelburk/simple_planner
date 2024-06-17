@@ -17,9 +17,15 @@ class Event(models.Model):
     def __str__(self):
         return f'{self.title}, {self.start} - {self.end}'
 
-class ListItem(models.Model):
-    content = models.CharField(max_length=255)
-    list_id = models.IntegerField()
+class ListName(models.Model):
+    title = models.CharField(max_length=30)
 
     def __str__(self):
-        return self.content
+        return self.title
+
+class ListItem(models.Model):
+    content = models.CharField(max_length=255)
+    list_name = models.ForeignKey(ListName, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.list_name}: {self.content}'
