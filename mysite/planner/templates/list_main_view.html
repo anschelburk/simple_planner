@@ -13,7 +13,7 @@
     <div class="list-container">
         {% for list in lists %}
             <div class="list">
-                <h1>List {{ list.id }}</h1>
+                <h1>{{ list.list_name }}</h1>
                 <ul id="item-list-{{ list.id }}">
                     {% for item in list.items %}
                         <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' item.pk %}" hx-trigger="click">
