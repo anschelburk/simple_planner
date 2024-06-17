@@ -13,16 +13,17 @@
     <div class="list-container">
         {% for list in lists %}
             <div class="list">
-                <h1>List {{ list.id }}</h1>
+                <h1>{{ list.list_name }}</h1>
                 <ul id="item-list-{{ list.id }}">
                     {% for item in list.items %}
-                        <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' list.id item.pk %}" hx-trigger="click">
+                        <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' item.pk %}" hx-trigger="click">
                             {{ item.content }}
                         </li>
                     {% endfor %}
                 </ul>
-                <form id="add-item-form-{{ list.id }}" hx-post="{% url 'list_add_item' list.id %}" hx-target="#item-list-{{ list.id }}" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
+                <form id="add-item-form-{{ list_name.pk }}" hx-post="{% url 'list_add_item' %}" hx-target="#item-list-{{ list_name.pk }}" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
                     {% csrf_token %}
+                    <!-- <input type="hidden" name="list_id" value="{{ item.list_id }}"> -->
                     {{ list.add_form.as_p }}
                     <input type="submit" value="Add">
                 </form>
