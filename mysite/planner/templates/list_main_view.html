@@ -21,9 +21,9 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <form id="add-item-form-{{ list.id }}" hx-post="{% url 'list_add_item' %}" hx-target="#item-list-{{ list.id }}" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
+                <form id="add-item-form-{{ list_name.pk }}" hx-post="{% url 'list_add_item' %}" hx-target="#item-list-{{ list_name.pk }}" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
                     {% csrf_token %}
-                    <input type="hidden" name="list_id" value="{{ item.list_id }}">
+                    <!-- <input type="hidden" name="list_id" value="{{ item.list_id }}"> -->
                     {{ list.add_form.as_p }}
                     <input type="submit" value="Add">
                 </form>
