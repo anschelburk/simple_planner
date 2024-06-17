@@ -4,12 +4,12 @@ from django import forms
 class ListItemBaseForm(forms.ModelForm):
     class Meta:
         model = ListItem
-        fields = ["content", "list_id"]
+        fields = ["content", "list_name"]
 
-    def __init__(self, list_id, *args, **kwargs):
+    def __init__(self, list_name, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["content"].label = ""
-        self.fields["list_id"] = forms.IntegerField(initial=list_id, widget=forms.HiddenInput())
+        self.fields["list_name"] = forms.IntegerField(initial=list_name, widget=forms.HiddenInput())
 
 class ListItemUpdateForm(ListItemBaseForm):
     def __init__(self, *args, **kwargs):
