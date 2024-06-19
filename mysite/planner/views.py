@@ -65,8 +65,8 @@ def update_event(request):
 def list_view_items(request):
     all_list_items = ListItem.objects.all()
     item_lists = defaultdict(list)    
-    # for item in all_list_items:
-    #     item_lists[item.list_id].append(item)
+    for item in all_list_items:
+        item_lists[item.list_id].append(item)
     lists = []
     for listID in range(1, 4):  # Adjust this range as needed
         lists.append({
