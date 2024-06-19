@@ -1,4 +1,4 @@
-from .models import ListItem, Publisher, Book
+from .models import ListItem
 from django import forms
 from django.forms import inlineformset_factory
 
@@ -11,7 +11,7 @@ class ListItemBaseForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["content"].label = ""
         self.fields["list_name"] = forms.CharField(initial='Enter List Title')
-        self.fields["list_name"].label = "" 
+        self.fields["list_name"].label = ""
 
 class ListItemUpdateForm(ListItemBaseForm):
     def __init__(self, *args, **kwargs):
@@ -24,17 +24,3 @@ class ListItemUpdateForm(ListItemBaseForm):
                 "placeholder": "Enter item here...",
             }
         )
-
-### TEMP
-
-class PublisherForm(forms.ModelForm):
-    class Meta:
-        model = Publisher
-        fields = ['name']
-
-class BookForm(forms.ModelForm):
-    class Meta:
-        model = Book
-        fields = ['title']
-
-BookFormSet = inlineformset_factory(Publisher, Book, form=BookForm, extra=1, can_delete=True)
