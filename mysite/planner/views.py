@@ -1,9 +1,9 @@
-from .forms import ListItemBaseForm, ListItemUpdateForm
-from .models import Event, ListItem
+from .forms import ListItemBaseForm, ListItemUpdateForm, PublisherForm, BookFormSet
+from .models import Event, ListItem, Publisher, Book
 from collections import defaultdict
 from django.http import HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from urllib.parse import parse_qs
@@ -65,8 +65,8 @@ def update_event(request):
 def list_view_items(request):
     all_list_items = ListItem.objects.all()
     item_lists = defaultdict(list)    
-    # for item in all_list_items:
-    #     item_lists[item.list_id].append(item)
+    for item in all_list_items:
+        item_lists[item.list_id].append(item)
     lists = []
     for listID in range(1, 4):  # Adjust this range as needed
         lists.append({
@@ -104,3 +104,25 @@ def list_add_item(request):
         item = form.save()
         return render(request, "list_item.html", {"item": item})
     return JsonResponse({"success": False})
+
+### TEMP
+
+def create_publisher_and_books(request):
+    if request.method == 'POST':
+        publisher_form = PublisherForm(request.POST)
+        book_formset = BookFormSet(request.POST)
+        if publisher_form.is_valid() and book_formset.is_valid():
+            publisher = publisher_form.save()
+            books = book_formset.save(commit=False)
+            for book in books:
+                book.publisher = publisher
+                book.save()
+            return redirect('create_publisher_and_books') # Redirect to the same view
+        else:
+            publisher_form = PublisherForm()
+            book_formset = BookFormSet(queryset=Book.objects.none)
+        
+        return render(request, 'create_publisher_and_books.html', {
+            'publisher_form': publisher_form,
+            'book_formset': book_formset,
+        })
