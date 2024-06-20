@@ -1,13 +1,14 @@
-from .forms import ListItemBaseForm, ListItemUpdateForm, PublisherForm, BookFormSet
-from .models import Event, ListItem, Publisher, Book
 from collections import defaultdict
-from django.http import HttpResponse, JsonResponse
-from django.middleware.csrf import get_token
-from django.shortcuts import get_object_or_404, render, redirect
-from django.template.loader import render_to_string
-from django.views.decorators.csrf import csrf_exempt
-from urllib.parse import parse_qs
 import json
+from urllib.parse import parse_qs
+
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt
+
+from .forms import ListItemUpdateForm
+from .models import Event, ListName, ListItem
 
 def calendar_view(request):
     return render(request, 'calendar.html')
@@ -63,22 +64,14 @@ def update_event(request):
 
 
 def list_view_items(request):
-    all_list_items = ListItem.objects.all()
-    item_lists = defaultdict(list)    
+    lists = defaultdict(list)
+    all_list_items = ListItem.objects.select_related('list_name').all()
     for item in all_list_items:
-        item_lists[item.list_id].append(item)
-    lists = []
-    for listID in range(1, 4):  # Adjust this range as needed
-        lists.append({
-            'id': listID,
-            'items': item_lists[listID],
-            'add_form': ListItemBaseForm(listID)
-        })
-    return_render_context = {
-        'lists': lists,
-        'csrf_token': get_token(request)
+        lists[item.list_name].append(item)
+    context = {
+        'lists': lists.items(),
     }
-    return render(request, "list_main_view.html", return_render_context)
+    return render(request, "list_main_view.html", context)
 
 def list_update_item(request, pk):
     item = get_object_or_404(ListItem, pk=pk)
@@ -90,39 +83,29 @@ def list_update_item(request, pk):
             item = form.save()
             return render(request, "list_item.html", {"item": item})
         else:
-            return JsonResponse({"success": False, "errors": form.errors}, status=400)            
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
     else:
         # GET request
         form = ListItemUpdateForm(instance=item)
     return render(request, "list_update_item.html", {"form": form, "item": item, "csrf_token": get_token(request)})
 
 def list_add_item(request):
-    #breakpoint()
-    print(request.POST)
-    form = ListItemBaseForm(request.POST)
-    if form.is_valid():
-        item = form.save()
-        return render(request, "list_item.html", {"item": item})
-    return JsonResponse({"success": False})
+    list_id = request.POST.get('list_id')
+    content = request.POST.get('content')
+    if not list_id or not content:
+        # TODO: this will inner swapped/replaced,
+        # how to better handle errors in htmx?
+        return JsonResponse(
+            {"success": False, "error": "List ID and content are required"})
 
-### TEMP
+    try:
+        list_id = int(list_id)
+        list_name = ListName.objects.get(pk=list_id)
+    except ListName.DoesNotExist:
+        return JsonResponse(
+            {"success": False, "error": "List ID does not exist"})
 
-def create_publisher_and_books(request):
-    if request.method == 'POST':
-        publisher_form = PublisherForm(request.POST)
-        book_formset = BookFormSet(request.POST)
-        if publisher_form.is_valid() and book_formset.is_valid():
-            publisher = publisher_form.save()
-            books = book_formset.save(commit=False)
-            for book in books:
-                book.publisher = publisher
-                book.save()
-            return redirect('create_publisher_and_books') # Redirect to the same view
-        else:
-            publisher_form = PublisherForm()
-            book_formset = BookFormSet(queryset=Book.objects.none)
-        
-        return render(request, 'create_publisher_and_books.html', {
-            'publisher_form': publisher_form,
-            'book_formset': book_formset,
-        })
+    # list_name should be the ListName object (not the ID)
+    item = ListItem.objects.create(content=content, list_name=list_name)
+    print(item)
+    return render(request, "list_item.html", {"item": item})
