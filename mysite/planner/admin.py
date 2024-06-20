@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Event, ListItem
+from .models import Event, ListName, ListItem
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
@@ -13,3 +13,8 @@ class EventAdmin(admin.ModelAdmin):
 class ListItemAdmin(admin.ModelAdmin):
     list_display = ('content',)
     search_fields = ('content',)
+
+@admin.register(ListName)
+class ListNameAdmin(admin.ModelAdmin):
+    list_display = ('title',)
+    search_fields = ('title',)

@@ -10,3 +10,13 @@
 form {
   margin: 0px;
 }
+
+.list-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.list {
+  width: 30%;
+  background-color: #f0f0f0;
+}
