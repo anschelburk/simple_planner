@@ -77,9 +77,7 @@ def list_update_item(request, pk):
     item = get_object_or_404(ListItem, pk=pk)
     if request.method == "PUT":
         body_data = parse_qs(request.body.decode())
-        print(body_data)
         data = {key: value[0] for key, value in body_data.items()}
-        print(data)
         form = ListItemUpdateForm(data, instance=item)
         if form.is_valid():
             item = form.save()

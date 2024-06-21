@@ -1,4 +1,4 @@
-from .models import ListName, ListItem
+from .models import ListItem
 from django import forms
 
 class ListItemBaseForm(forms.ModelForm):
@@ -23,3 +23,7 @@ class ListItemUpdateForm(ListItemBaseForm):
                 "placeholder": "Enter item here...",
             }
         )
+        # list_name is already set and doesn't need updating so remove
+        # it from fields to avoid validation (form.is_valid) issues
+        if 'list_name' in self.fields:
+            del self.fields['list_name']
