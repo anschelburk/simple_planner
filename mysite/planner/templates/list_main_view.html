@@ -16,7 +16,7 @@
                 <h1>{{ list_name.title }}</h1>
                 <ul id="item-list-{{ list_name.id }}">
                     {% for item in items %}
-                        <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' item.pk %}" hx-trigger="click">
+                        <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' pk=item.pk %}" hx-trigger="click">
                             {{ item.content }}
                         </li>
                     {% endfor %}
