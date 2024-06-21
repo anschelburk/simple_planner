@@ -6,15 +6,15 @@ class ListItemBaseForm(forms.ModelForm):
         model = ListItem
         fields = ["list_name", "content"]
 
-    def __init__(self, list_name, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["content"].label = ""
         self.fields["list_name"] = forms.CharField(initial='Enter List Title')
         self.fields["list_name"].label = ""
 
 class ListItemUpdateForm(ListItemBaseForm):
-    def __init__(self, list_name=ListName.title, *args, **kwargs):
-        super().__init__(list_name, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.fields["content"].widget = forms.TextInput(
             attrs={
                 "hx-put": "/update_item/{pk}/",
