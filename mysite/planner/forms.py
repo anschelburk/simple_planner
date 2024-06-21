@@ -1,6 +1,5 @@
-from .models import ListItem
+from .models import ListName, ListItem
 from django import forms
-from django.forms import inlineformset_factory
 
 class ListItemBaseForm(forms.ModelForm):
     class Meta:
@@ -14,8 +13,8 @@ class ListItemBaseForm(forms.ModelForm):
         self.fields["list_name"].label = ""
 
 class ListItemUpdateForm(ListItemBaseForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, list_name=ListName.title, *args, **kwargs):
+        super().__init__(list_name, *args, **kwargs)
         self.fields["content"].widget = forms.TextInput(
             attrs={
                 "hx-put": "/update_item/{pk}/",
