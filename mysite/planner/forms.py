@@ -9,7 +9,7 @@ class ListItemBaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["content"].label = ""
-        self.fields["list_name"] = forms.CharField(initial='Enter List Title')
+        self.fields["list_name"] = forms.CharField(initial='List')
         self.fields["list_name"].label = ""
 
 class ListItemUpdateForm(ListItemBaseForm):

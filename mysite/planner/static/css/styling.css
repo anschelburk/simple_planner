@@ -1,10 +1,28 @@
+#title {
+  width: 98%;
+  height: 8vh;
+  position: fixed;
+  top: 1%;
+  left: 1%;
+  overflow: hidden;
+}
+
 #calendar {
     width: 20%;
-    height: 98vh;  /* 100% of the viewport height */
+    height: 88vh;  /* 100% of the viewport height */
     position: fixed;  /* Ensure it stays fixed in the viewport */
-    top: 1%;
+    top: 11%;
     left: 1%;
     overflow: hidden;  /* Prevent overflow issues */
+}
+
+#lists {
+  width: 76%;
+  height: 88vh;
+  position: fixed;
+  top: 11%;
+  left: 23%;
+  overflow: hidden;
 }
 
 form {

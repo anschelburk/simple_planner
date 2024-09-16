@@ -1,0 +1,52 @@
+{% extends "base_site.html" %}
+
+{% block head_content %}
+    {% load static %}
+
+    <!-- For HTMX (for calendar) -->
+    <script src="https://unpkg.com/htmx.org@1.5.0"></script>
+    
+    <!-- For calendar_modal_structure.html -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <!-- For FullCalendar -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.css' rel='stylesheet' />
+    <link href="{% static 'css/styling.css' %}" rel="stylesheet">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js'></script>
+    <script src="{% static 'js/calendar.js' %}"></script>
+
+{% endblock %}
+
+{% block body_content %}
+    <div id='calendar'>
+        {% include "calendar_modal_structure.html" %}
+    </div>
+    <div id="lists">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <div class="list-container">
+            {% for list_name, items in lists %}
+                <div class="list">
+                    <h1>{{ list_name.title }}</h1>
+                    <ul id="item-list-{{ list_name.id }}">
+                        {% for item in items %}
+                            <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' pk=item.pk %}" hx-trigger="click">
+                                {{ item.content }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <form id="add-item-form-{{ list_name.pk }}" hx-post="{% url 'list_add_item' %}" hx-target="#item-list-{{ list_name.pk }}" hx-swap="beforeend" hx-on="htmx:afterOnLoad: this.reset()">
+                        {% csrf_token %}
+                        <input type="hidden" name="list_id" value="{{ list_name.pk }}">
+                        <input name="content" type="text" placeholder="Add item">
+                        <input type="submit" value="Add">
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+{% endblock %}

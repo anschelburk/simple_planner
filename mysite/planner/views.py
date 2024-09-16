@@ -10,6 +10,16 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import ListItemUpdateForm
 from .models import Event, ListName, ListItem
 
+def index(request):
+    lists = defaultdict(list)
+    all_list_items = ListItem.objects.select_related('list_name').all()
+    for item in all_list_items:
+        lists[item.list_name].append(item)
+    context = {
+        'lists': lists.items(),
+    }
+    return render(request, "home.html", context)
+
 def calendar_view(request):
     return render(request, 'calendar.html')
 
@@ -93,8 +103,10 @@ def list_add_item(request):
     list_id = request.POST.get('list_id')
     content = request.POST.get('content')
     if not list_id or not content:
-        # TODO: this will inner swapped/replaced,
-        # how to better handle errors in htmx?
+        # TODO: this will be inner swapped/replaced,
+        # how can we better handle errors in htmx?
+        # Perhaps change `return JsonResponse` to `return render` w/
+        # html and an error code, like at the bottom?
         return JsonResponse(
             {"success": False, "error": "List ID and content are required"})
 
