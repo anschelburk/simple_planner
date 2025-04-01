@@ -1,14 +1,13 @@
-from collections import defaultdict
 import json
-from urllib.parse import parse_qs
 
+from .forms import ListItemUpdateForm
+from .models import Event, ListName, ListItem
+from collections import defaultdict
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
-
-from .forms import ListItemUpdateForm
-from .models import Event, ListName, ListItem
+from urllib.parse import parse_qs
 
 def index(request):
     lists = defaultdict(list)
