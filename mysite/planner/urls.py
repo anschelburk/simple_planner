@@ -9,5 +9,7 @@ urlpatterns = [
     path('calendar/', views.calendar_view, name='calendar'),
     path('list/', views.list_view_items, name='list_view_items'),
     path('list/add_item/', views.list_add_item, name='list_add_item'),
+    path('list/delete_item/<int:pk>/', views.list_delete_item, name='list_delete_item'),
     path('list/update_item/<int:pk>/', views.list_update_item, name='list_update_item'),
+
 ]

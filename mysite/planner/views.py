@@ -4,7 +4,7 @@ import logging
 from .forms import ListItemUpdateForm
 from .models import Event, ListName, ListItem
 from collections import defaultdict
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
@@ -156,3 +156,21 @@ def list_add_item(request):
     item = ListItem.objects.create(content=content, list_name=list_name)
     logger.debug(f"list_add_item: Item created: {item}")
     return render(request, "list_item.html", {"item": item})
+
+def list_delete_item(request, pk):
+    """
+    Handles deleting a ListItem.
+
+    Args:
+        request: The HTTP request object.
+        pk: The primary key of the ListItem to delete.
+
+    Returns:
+        An HTTP response.
+    """
+    item = get_object_or_404(ListItem, pk=pk)
+
+    if request.method == "DELETE":
+        item.delete()
+        return HttpResponse("")  # Return an empty response
+    return HttpResponse(status=405) # Return a 405 error if the request is not a DELETE request

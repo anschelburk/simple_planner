@@ -17,6 +17,7 @@
                     {% for item in items %}
                         <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' pk=item.pk %}" hx-swap="outerHTML">
                             {{ item.content }}
+                            <button hx-delete="{% url 'list_delete_item' pk=item.pk %}" hx-target="#item-{{ item.pk }}" hx-swap="outerHTML">Delete</button>
                         </li>
                     {% endfor %}
                 </ul>
