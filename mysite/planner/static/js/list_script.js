@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (updateItemForm) {
         updateItemForm.addEventListener('submit', function(event) {
             event.preventDefault();
+            event.stopPropagation();
         });
     }
 });
