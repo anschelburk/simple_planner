@@ -4,20 +4,6 @@ document.addEventListener('htmx:configRequest', function(event) {
     event.detail.headers['X-CSRFToken'] = csrfToken;
 });
 
-// Handle Enter key press in forms to trigger HTMX requests
-document.addEventListener('htmx:configRequest', function(event) {
-    // Check if the triggering event was a keydown event with the Enter key
-    if (event.detail.triggeringEvent.type === 'keydown' && event.detail.triggeringEvent.key === 'Enter') {
-        var form = event.detail.triggeringEvent.target.closest('form');
-        if (form) {
-            // Set the request path to the form's hx-post or hx-put attribute
-            event.detail.path = form.getAttribute('hx-post') || form.getAttribute('hx-put');
-            // Add an HX-Trigger header to indicate that the Enter key was pressed
-            event.detail.headers['HX-Trigger'] = 'enter-key-submit';
-        }
-    }
-});
-
 // Reset form and focus on input after adding an item
 document.addEventListener('htmx:afterRequest', function(event) {
     // Check if the request was to add an item
@@ -32,5 +18,15 @@ document.addEventListener('htmx:afterRequest', function(event) {
         form.querySelector('input[type="text"]').focus();
 
         console.log('Item added');
+    }
+});
+
+// Prevent default form submission for the update item form
+document.addEventListener('DOMContentLoaded', function() {
+    const updateItemForm = document.getElementById('update-item-form');
+    if (updateItemForm) {
+        updateItemForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+        });
     }
 });

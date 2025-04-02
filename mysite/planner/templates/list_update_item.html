@@ -1,4 +1,4 @@
-<form hx-put="{% url 'list_update_item' pk=item.pk %}" hx-trigger="blur from:input" hx-target="this" hx-swap="outerHTML">
+<form hx-put="{% url 'list_update_item' pk=item.pk %}" hx-trigger="blur from:input" hx-target="this" hx-swap="outerHTML" id="update-item-form">
     {% csrf_token %}
-    <input type="text" name="content" value="{{ item.content }}" placeholder="Enter item here..." maxlength="255" required="" id="id_content" onkeydown="handleEnterKey(event)">
+    <input type="text" name="content" value="{{ item.content }}" placeholder="Enter item here..." maxlength="255" required="" id="id_content">
 </form>
