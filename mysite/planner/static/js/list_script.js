@@ -20,14 +20,3 @@ document.addEventListener('htmx:afterRequest', function(event) {
         console.log('Item added');
     }
 });
-
-// Prevent default form submission for the update item form
-document.addEventListener('DOMContentLoaded', function() {
-    const updateItemForm = document.getElementById('update-item-form');
-    if (updateItemForm) {
-        updateItemForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-        });
-    }
-});
