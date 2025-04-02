@@ -9,14 +9,13 @@
 {% endblock %}
 
 {% block body_content %}
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div class="list-container">
         {% for list_name, items in lists %}
             <div class="list">
                 <h1>{{ list_name.title }}</h1>
                 <ul id="item-list-{{ list_name.id }}">
                     {% for item in items %}
-                        <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' pk=item.pk %}" hx-trigger="click">
+                        <li id="item-{{ item.pk }}" hx-get="{% url 'list_update_item' pk=item.pk %}" hx-trigger="click" hx-swap="outerHTML">
                             {{ item.content }}
                         </li>
                     {% endfor %}
