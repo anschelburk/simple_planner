@@ -1,7 +1,7 @@
 asgiref==3.11.1
 dj-database-url==2.2.0
 Django==6.0.5
-protobuf==6.32.0
+protobuf==7.34.1
 psycopg2-binary==2.9.10
 python-decouple==3.8
 sqlparse==0.5.0
