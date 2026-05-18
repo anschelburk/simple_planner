@@ -1,6 +1,6 @@
 # Simple Planner
 
-## Copyright © 2024 Anschel Burk. All rights not explicitly granted in this project's license reserved.
+## Copyright © 2026 Anschel Burk. All rights not explicitly granted in this project's license reserved.
 
 ## 1. Description
 
